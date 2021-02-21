@@ -1,4 +1,5 @@
-# multiple-ds-user-storage: Keycloak User Storage Provider with multiple JPA datasources support
+# multiple-ds-user-storage
+## Keycloak User Storage Provider with multiple JPA datasources support
 
 When migrating multiple legacy auth systems to Keycloak it's useful to read credentials from an existing database 
 (that being MySQL, Oracle, PostgreSQL, etc) in an on-demand way.
@@ -15,9 +16,9 @@ As an example:
 
 ### System Requirements
 
-You need to have <span>Keycloak</span> running.
-
-All you need to build this project is Java SDK 11.0 (Java SDK 1) or later and Maven 3.3.3 or later.
+* tested on Keycloak 12.0.2 and later 
+* Java SDK 11.0 or later
+* Maven 3.3.3 or later
 
 ### Pre-requisite - create the WildFly datasources
 
@@ -36,11 +37,19 @@ or programmatically like below. Remember to replace required variables (in upper
 1. compile with `mvn package`
 2. copy `target/multiple-ds-user-storage.jar` to `<keycloak>/deployments/` folder
 
-### Enable the Provider for a Realm
+### Enable the Provider instances for a Realm
 
-Login to the <span>Keycloak</span> Admin Console and got to the User Federation tab.   You should now see your deployed provider in the add-provider list box.
-Add the provider, save it.  This will now enable the provider for the 'master' realm.
+1. Login to the <span>Keycloak</span> Admin Console
+2. access User Federation tab
+3. add a new User Storage provider instance selecting `multiple-ds-user-storage` from the list box
+ 
+![image](https://user-images.githubusercontent.com/2743637/108629459-41874a80-7460-11eb-9b28-4b930f554ae0.png)
 
+![image](https://user-images.githubusercontent.com/2743637/108629352-bc039a80-745f-11eb-9445-3fc6f7eb91f3.png)
+
+5. save and repeat for as many datasources you need
+
+![image](https://user-images.githubusercontent.com/2743637/108629322-937ba080-745f-11eb-8a89-63e530a352cf.png)
 ### More Information
 
 * password validation can be customized in `MultipleDSUserStorageProvider.isValid` (by default: salted SHA-1)
