@@ -1,6 +1,5 @@
 # multiple-ds-user-storage
 ## Keycloak User Storage Provider with multiple JPA datasources support
-
 When migrating multiple legacy auth systems to Keycloak it's useful to read credentials from an existing database 
 (that being MySQL, Oracle, PostgreSQL, etc) in an on-demand way.
 
@@ -15,10 +14,11 @@ As an example:
 * User Storage Provider C => reading from DB-C
 
 ### System Requirements
+![CI](https://github.com/nicolabeghin/keycloak-multiple-ds-user-storage/actions/workflows/maven.yml/badge.svg)
 
 * tested on Keycloak 12.0.2 and later 
-* Java SDK 11.0 or later
-* Maven 3.3.3 or later
+* Java SDK 11.0 or later 
+* * Maven 3.3.3 or later
 
 ### Pre-requisite - create the WildFly datasources
 
