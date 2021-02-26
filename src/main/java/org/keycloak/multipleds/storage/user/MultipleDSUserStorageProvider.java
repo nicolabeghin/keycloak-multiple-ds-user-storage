@@ -1,7 +1,7 @@
 package org.keycloak.multipleds.storage.user;
 
-import org.apache.commons.lang.StringUtils;
 import org.jboss.logging.Logger;
+import org.keycloak.common.util.ObjectUtil;
 import org.keycloak.component.ComponentModel;
 import org.keycloak.credential.CredentialInput;
 import org.keycloak.credential.CredentialInputUpdater;
@@ -86,8 +86,8 @@ public class MultipleDSUserStorageProvider implements UserStorageProvider,
             local = session.userLocalStorage().addUser(realm, userEntity.getUsername());
             local.setFirstName(userEntity.getFirstName());
             local.setLastName(userEntity.getLastName());
-            if (StringUtils.isNotBlank(userEntity.getEmail())) {
-                local.setEmail(StringUtils.trim(userEntity.getEmail()));
+            if (userEntity.getEmail() != null && !ObjectUtil.isBlank(userEntity.getEmail())) {
+                local.setEmail(userEntity.getEmail().trim());
             }
             local.setEnabled(userEntity.isEnabled());
             local.setFederationLink(model.getId());
