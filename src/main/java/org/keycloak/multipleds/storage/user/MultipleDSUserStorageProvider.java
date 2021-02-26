@@ -81,7 +81,7 @@ public class MultipleDSUserStorageProvider implements UserStorageProvider,
             local.setFederationLink(model.getId());
             return new MultipleDSUserModelDelegate(local, userEntity);
         } else {
-            logger.info("Reusing local user " + local.getUsername() + " with pwd " + userEntity.getPassword());
+            logger.info("Reusing local user " + local.getUsername());
         }
         return new MultipleDSUserModelDelegate(local, userEntity);
     }
