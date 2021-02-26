@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 @NamedQueries({
         @NamedQuery(name = "getUserByUsername", query = "select u from UserEntity u where u.username = :username AND attivo=1"),
+        @NamedQuery(name = "getUserById", query = "select u from UserEntity u where u.id = :id AND attivo=1"),
         @NamedQuery(name = "getUserByEmail", query = "select u from UserEntity u where u.email = :email AND attivo=1"),
         @NamedQuery(name = "getUserCount", query = "select count(u) from UserEntity u WHERE attivo=1"),
         @NamedQuery(name = "getAllUsers", query = "select u from UserEntity u WHERE attivo=1"),

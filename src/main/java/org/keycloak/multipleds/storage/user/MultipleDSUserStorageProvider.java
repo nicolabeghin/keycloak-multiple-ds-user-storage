@@ -9,18 +9,16 @@ import org.keycloak.credential.CredentialInputValidator;
 import org.keycloak.credential.CredentialModel;
 import org.keycloak.models.*;
 import org.keycloak.models.cache.CachedUserModel;
+import org.keycloak.multipleds.storage.user.entities.UserDAO;
 import org.keycloak.multipleds.storage.user.entities.UserEntity;
 import org.keycloak.multipleds.storage.user.models.MultipleDSUserModelDelegate;
 import org.keycloak.multipleds.storage.user.utils.SHA1Utils;
-import org.keycloak.storage.StorageId;
 import org.keycloak.storage.UserStorageProvider;
 import org.keycloak.storage.user.ImportedUserValidation;
 import org.keycloak.storage.user.UserLookupProvider;
 import org.keycloak.storage.user.UserQueryProvider;
 
 import javax.ejb.Local;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import java.util.*;
 
 //@Stateful
@@ -33,23 +31,21 @@ public class MultipleDSUserStorageProvider implements UserStorageProvider,
         ImportedUserValidation {
     private static final Logger logger = Logger.getLogger(MultipleDSUserStorageProvider.class);
 
-    private final EntityManager entityManager;
     private final ComponentModel model;
     private final KeycloakSession session;
     private final String salt;
+    private UserDAO userDAO;
 
-    public MultipleDSUserStorageProvider(KeycloakSession session, ComponentModel model, String salt, EntityManager entityManager) {
+    public MultipleDSUserStorageProvider(KeycloakSession session, ComponentModel model, String salt, UserDAO userDAO) {
         this.session = session;
         this.model = model;
         this.salt = salt;
-        this.entityManager = entityManager;
+        this.userDAO = userDAO;
     }
 
     @Override
     public UserModel getUserById(String id, RealmModel realm) {
-        logger.info("getUserById: " + id);
-        String persistenceId = StorageId.externalId(id);
-        UserEntity entity = entityManager.find(UserEntity.class, persistenceId);
+        UserEntity entity = userDAO.findById(id);
         if (entity == null) {
             logger.info("could not find user by id: " + id);
             return null;
@@ -63,15 +59,7 @@ public class MultipleDSUserStorageProvider implements UserStorageProvider,
     }
 
     private UserEntity getUserEntityByUsername(String username) {
-        logger.info("getUserByUsername: " + username);
-        TypedQuery<UserEntity> query = entityManager.createNamedQuery("getUserByUsername", UserEntity.class);
-        query.setParameter("username", username);
-        List<UserEntity> result = query.getResultList();
-        if (result.isEmpty()) {
-            logger.info("could not find username: " + username);
-            return null;
-        }
-        return result.get(0);
+        return userDAO.findByUsername(username);
     }
 
     private UserModel createAdapter(RealmModel realm, UserModel local) {
@@ -100,19 +88,15 @@ public class MultipleDSUserStorageProvider implements UserStorageProvider,
 
     @Override
     public UserModel getUserByEmail(String email, RealmModel realm) {
-        TypedQuery<UserEntity> query = entityManager.createNamedQuery("getUserByEmail", UserEntity.class);
-        query.setParameter("email", email);
-        List<UserEntity> result = query.getResultList();
-        if (result.isEmpty()) return null;
-        return createAdapter(realm, result.get(0));
+        UserEntity userEntity = userDAO.findByEmail(email);
+        if (userEntity != null) createAdapter(realm, userEntity);
+        return null;
     }
 
     @Override
     public UserModel validate(RealmModel realmModel, UserModel userModel) {
-        TypedQuery<UserEntity> query = entityManager.createNamedQuery("getUserByUsername", UserEntity.class);
-        query.setParameter("username", userModel.getUsername());
-        List<UserEntity> result = query.getResultList();
-        if (!result.isEmpty() && !result.get(0).isEnabled()) {
+        UserEntity userEntity = userDAO.findByUsername(userModel.getUsername());
+        if (userEntity == null || !userEntity.isEnabled()) {
             logger.warn("Username " + userModel.getUsername() + " not active anymore, evicting from Keycloak");
             return null;
         }
@@ -187,9 +171,7 @@ public class MultipleDSUserStorageProvider implements UserStorageProvider,
 
     @Override
     public int getUsersCount(RealmModel realm) {
-        Object count = entityManager.createNamedQuery("getUserCount")
-                .getSingleResult();
-        return ((Number) count).intValue();
+        return userDAO.getCount();
     }
 
     @Override
@@ -199,15 +181,7 @@ public class MultipleDSUserStorageProvider implements UserStorageProvider,
 
     @Override
     public List<UserModel> getUsers(RealmModel realm, int firstResult, int maxResults) {
-
-        TypedQuery<UserEntity> query = entityManager.createNamedQuery("getAllUsers", UserEntity.class);
-        if (firstResult != -1) {
-            query.setFirstResult(firstResult);
-        }
-        if (maxResults != -1) {
-            query.setMaxResults(maxResults);
-        }
-        List<UserEntity> results = query.getResultList();
+        List<UserEntity> results = userDAO.findAll(firstResult, maxResults);
         List<UserModel> users = new LinkedList<>();
         for (UserEntity entity : results) users.add(createAdapter(realm, entity));
         return users;
@@ -220,15 +194,7 @@ public class MultipleDSUserStorageProvider implements UserStorageProvider,
 
     @Override
     public List<UserModel> searchForUser(String search, RealmModel realm, int firstResult, int maxResults) {
-        TypedQuery<UserEntity> query = entityManager.createNamedQuery("searchForUser", UserEntity.class);
-        query.setParameter("search", "%" + search.toLowerCase() + "%");
-        if (firstResult != -1) {
-            query.setFirstResult(firstResult);
-        }
-        if (maxResults != -1) {
-            query.setMaxResults(maxResults);
-        }
-        List<UserEntity> results = query.getResultList();
+        List<UserEntity> results = userDAO.search(search, firstResult, maxResults);
         List<UserModel> users = new LinkedList<>();
         for (UserEntity entity : results) users.add(createAdapter(realm, entity));
         return users;
@@ -276,14 +242,7 @@ public class MultipleDSUserStorageProvider implements UserStorageProvider,
 
     @Override
     public void close() {
-        try {
-            if (entityManager != null) {
-                entityManager.close();
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
-        }
+        userDAO.close();
     }
 
 }

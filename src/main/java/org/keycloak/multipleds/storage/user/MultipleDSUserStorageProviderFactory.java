@@ -7,6 +7,7 @@ import org.keycloak.component.ComponentModel;
 import org.keycloak.component.ComponentValidationException;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
+import org.keycloak.multipleds.storage.user.entities.UserDAO;
 import org.keycloak.provider.ProviderConfigProperty;
 import org.keycloak.provider.ProviderConfigurationBuilder;
 import org.keycloak.storage.UserStorageProviderFactory;
@@ -25,6 +26,8 @@ public class MultipleDSUserStorageProviderFactory implements UserStorageProvider
     private static final String DATASOURCE_PROPERTY = "datasource";
     private static final String SALT_PROPERTY = "salt";
 
+    private Map<String, EntityManagerFactory> entityManagerFactories = new HashMap<>();
+
     static {
         configMetadata = ProviderConfigurationBuilder.create()
                 .property().name(DATASOURCE_PROPERTY)
@@ -39,16 +42,13 @@ public class MultipleDSUserStorageProviderFactory implements UserStorageProvider
                 .add().build();
     }
 
-    private EntityManagerFactory managedEntityManagerFactory;
-    private Map<String, EntityManager> entityManagers = new HashMap<>();
-
     @Override
     public MultipleDSUserStorageProvider create(KeycloakSession session, ComponentModel model) {
         try {
             String datasource = model.getConfig().getFirst(DATASOURCE_PROPERTY);
             String salt = model.getConfig().getFirst(SALT_PROPERTY);
-            logger.info("Initializing with datasource " + datasource);
-            return new MultipleDSUserStorageProvider(session, model, salt, getEntityManager(datasource));
+            logger.info("Initializing instance with datasource " + datasource);
+            return new MultipleDSUserStorageProvider(session, model, salt, new UserDAO(getEntityManager(datasource).createEntityManager()));
         } catch (Exception e) {
             logger.error(e.getMessage());
             e.printStackTrace();
@@ -69,10 +69,6 @@ public class MultipleDSUserStorageProviderFactory implements UserStorageProvider
             logger.error("Salt not defined");
             throw new ComponentValidationException("Salt not defined");
         }
-
-        // on configuration update we need to close the entity manager factory as we might
-        // have to connect to a different data source
-        closeEntityManagerFactory();
     }
 
     /**
@@ -82,19 +78,23 @@ public class MultipleDSUserStorageProviderFactory implements UserStorageProvider
      * @return a configured entity manager factory
      * @url https://gist.github.com/bertramn/cbc4eec5e7b13e28099f4165a0c15b29
      */
-    private EntityManager getEntityManager(String datasourceName) {
-        Properties p = new Properties();
-        p.put(AvailableSettings.DATASOURCE, datasourceName);
-        p.put(AvailableSettings.JTA_PLATFORM, JBossAppServerJtaPlatform.class.getName());
-        p.put("current_session_context_class", "jta");
-        p.put(AvailableSettings.SHOW_SQL, false);
-        p.put(AvailableSettings.FORMAT_SQL, false);
+    private EntityManagerFactory getEntityManager(String datasourceName) {
+        EntityManagerFactory entityManagerFactory = entityManagerFactories.get(datasourceName);
+        if (entityManagerFactory == null) {
+            logger.info("Creating factory for " + datasourceName);
+            Properties p = new Properties();
+            p.put(AvailableSettings.DATASOURCE, datasourceName);
+            p.put(AvailableSettings.JTA_PLATFORM, JBossAppServerJtaPlatform.class.getName());
+            p.put("current_session_context_class", "jta");
+            p.put(AvailableSettings.SHOW_SQL, false);
+            p.put(AvailableSettings.FORMAT_SQL, false);
 
-        // Adding "hibernate.classLoaders" property is critical for this to work with keycloak!!!
-        p.put(AvailableSettings.CLASSLOADERS, Collections.singletonList(getClass().getClassLoader()));
-
-        managedEntityManagerFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME, p);
-        return managedEntityManagerFactory.createEntityManager();
+            // Adding "hibernate.classLoaders" property is critical for this to work with keycloak!!!
+            p.put(AvailableSettings.CLASSLOADERS, Collections.singletonList(getClass().getClassLoader()));
+            entityManagerFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME, p);
+            entityManagerFactories.put(datasourceName, entityManagerFactory);
+        }
+        return entityManagerFactory;
     }
 
     @Override
@@ -112,24 +112,4 @@ public class MultipleDSUserStorageProviderFactory implements UserStorageProvider
         return DESCRIPTION;
     }
 
-    @Override
-    public void close() {
-        closeEntityManagerFactory();
-    }
-
-    /**
-     * Closes the application managed entity manager factory and frees handle for GC.
-     */
-    private void closeEntityManagerFactory() {
-        if (managedEntityManagerFactory != null) {
-            try {
-                managedEntityManagerFactory.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                managedEntityManagerFactory = null;
-            }
-
-        }
-    }
 }
