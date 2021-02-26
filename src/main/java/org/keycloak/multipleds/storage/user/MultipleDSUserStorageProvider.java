@@ -29,7 +29,7 @@ public class MultipleDSUserStorageProvider implements UserStorageProvider,
         CredentialInputUpdater,
         CredentialInputValidator,
         ImportedUserValidation {
-    private static final Logger logger = Logger.getLogger(MultipleDSUserStorageProvider.class);
+    private final Logger logger = Logger.getLogger(MultipleDSUserStorageProvider.class);
 
     private final ComponentModel model;
     private final KeycloakSession session;
