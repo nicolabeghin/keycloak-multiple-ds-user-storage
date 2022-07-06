@@ -64,7 +64,7 @@ by adding a corresponding  `<persistence-unit>` for each datasource.
 ### Build and Deploy
 
 1. compile with `mvn package`
-2. copy `target/multiple-ds-user-storage.jar` to `<keycloak>/deployments/` folder
+2. copy `target/multiple-ds-user-storage.jar` to `<keycloak>/providers/` folder
 
 ### Enable the Provider instances for a Realm
 
