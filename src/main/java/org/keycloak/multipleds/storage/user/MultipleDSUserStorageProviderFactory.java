@@ -1,10 +1,9 @@
 package org.keycloak.multipleds.storage.user;
 
-import org.hibernate.cfg.AvailableSettings;
-import org.hibernate.engine.transaction.jta.platform.internal.JBossAppServerJtaPlatform;
 import org.jboss.logging.Logger;
 import org.keycloak.component.ComponentModel;
 import org.keycloak.component.ComponentValidationException;
+import org.keycloak.connections.jpa.JpaConnectionProvider;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.multipleds.storage.user.entities.UserDAO;
@@ -14,8 +13,7 @@ import org.keycloak.storage.UserStorageProviderFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import java.util.*;
+import java.util.List;
 
 public class MultipleDSUserStorageProviderFactory implements UserStorageProviderFactory<MultipleDSUserStorageProvider> {
     protected static final List<ProviderConfigProperty> configMetadata;
@@ -26,14 +24,12 @@ public class MultipleDSUserStorageProviderFactory implements UserStorageProvider
     private static final String DATASOURCE_PROPERTY = "datasource";
     private static final String SALT_PROPERTY = "salt";
 
-    private Map<String, EntityManagerFactory> entityManagerFactories = new HashMap<>();
-
     static {
         configMetadata = ProviderConfigurationBuilder.create()
                 .property().name(DATASOURCE_PROPERTY)
                 .type(ProviderConfigProperty.STRING_TYPE)
                 .label("Datasource")
-                .helpText("JPA datasource ie. java:jboss/datasources/SIADS")
+                .helpText("JPA datasource ie. user-store")
                 .add()
                 .property().name(SALT_PROPERTY)
                 .type(ProviderConfigProperty.STRING_TYPE)
@@ -45,10 +41,11 @@ public class MultipleDSUserStorageProviderFactory implements UserStorageProvider
     @Override
     public MultipleDSUserStorageProvider create(KeycloakSession session, ComponentModel model) {
         try {
-            String datasource = model.getConfig().getFirst(DATASOURCE_PROPERTY);
+            // JBoss to Quarkus: remove prefix "java:jboss/datasources/" if existing
+            String datasource = model.getConfig().getFirst(DATASOURCE_PROPERTY).replace("java:jboss/datasources/", "");
             String salt = model.getConfig().getFirst(SALT_PROPERTY);
             logger.info("Initializing instance with datasource " + datasource);
-            return new MultipleDSUserStorageProvider(session, model, salt, new UserDAO(getEntityManager(datasource).createEntityManager()));
+            return new MultipleDSUserStorageProvider(session, model, salt, new UserDAO(getEntityManager(session, datasource)));
         } catch (Exception e) {
             logger.error(e.getMessage());
             e.printStackTrace();
@@ -74,27 +71,15 @@ public class MultipleDSUserStorageProviderFactory implements UserStorageProvider
     /**
      * Create a JTA enabled and enrolled {@link EntityManagerFactory} that can be injected into the {@link MultipleDSUserStorageProvider}.
      *
-     * @param datasourceName the JNDI name of the XA datasource
-     * @return a configured entity manager factory
-     * @url https://gist.github.com/bertramn/cbc4eec5e7b13e28099f4165a0c15b29
+     * @param datasourceName name of the datasource
+     * @return entity manager for the given datasource
      */
-    private EntityManagerFactory getEntityManager(String datasourceName) {
-        EntityManagerFactory entityManagerFactory = entityManagerFactories.get(datasourceName);
-        if (entityManagerFactory == null) {
-            logger.info("Creating factory for " + datasourceName);
-            Properties p = new Properties();
-            p.put(AvailableSettings.DATASOURCE, datasourceName);
-            p.put(AvailableSettings.JTA_PLATFORM, JBossAppServerJtaPlatform.class.getName());
-            p.put("current_session_context_class", "jta");
-            p.put(AvailableSettings.SHOW_SQL, false);
-            p.put(AvailableSettings.FORMAT_SQL, false);
-
-            // Adding "hibernate.classLoaders" property is critical for this to work with keycloak!!!
-            p.put(AvailableSettings.CLASSLOADERS, Collections.singletonList(getClass().getClassLoader()));
-            entityManagerFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME, p);
-            entityManagerFactories.put(datasourceName, entityManagerFactory);
+    private EntityManager getEntityManager(KeycloakSession session, String datasourceName) {
+        EntityManager em = session.getProvider(JpaConnectionProvider.class, datasourceName).getEntityManager();
+        if (em == null) {
+            logger.error("Entity manager is null for datasource " + datasourceName);
         }
-        return entityManagerFactory;
+        return em;
     }
 
     @Override

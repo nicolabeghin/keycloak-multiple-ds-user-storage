@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.keycloak.quickstarts</groupId>
         <artifactId>keycloak-quickstart-parent</artifactId>
-        <version>12.0.2</version>
+        <version>18.0.2</version>
         <relativePath>pom_parent.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -40,8 +40,6 @@
     <properties>
         <version.compiler.maven.plugin>3.5.1</version.compiler.maven.plugin>
         <version.hibernate.javax.persistence>1.0.0.Final</version.hibernate.javax.persistence>
-        <version.jboss-ejb-api>1.0.0.Final</version.jboss-ejb-api>
-        <jboss.server.port>9990</jboss.server.port>
     </properties>
 
     <dependencies>
@@ -63,7 +61,13 @@
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-model-jpa</artifactId>
+            <version>${version.keycloak}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-quarkus-server-deployment</artifactId>
+            <version>${version.keycloak}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.logging</groupId>
@@ -75,25 +79,6 @@
             <artifactId>hibernate-jpa-2.1-api</artifactId>
             <version>${version.hibernate.javax.persistence}</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.spec.javax.ejb</groupId>
-            <artifactId>jboss-ejb-api_3.2_spec</artifactId>
-            <version>${version.jboss-ejb-api}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.graphene</groupId>
-            <artifactId>graphene-webdriver</artifactId>
-            <version>${arquillian-graphene.version}</version>
-            <type>pom</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.extension</groupId>
-            <artifactId>arquillian-phantom-driver</artifactId>
-            <version>${arquillian-phantom.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -110,21 +95,14 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.wildfly.plugins</groupId>
-                <artifactId>wildfly-maven-plugin</artifactId>
-                <version>${version.wildfly.maven.plugin}</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${version.surefire.plugin}</version>
                 <configuration>
-                    <skip>false</skip>
+                    <systemPropertyVariables>
+                        <buildDirectory>${project.build.directory}</buildDirectory>
+                    </systemPropertyVariables>
                 </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>enforce-quickstart-realm-file-exist</id>
-                        <phase>validate</phase>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

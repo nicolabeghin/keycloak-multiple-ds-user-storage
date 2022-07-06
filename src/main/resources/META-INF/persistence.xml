@@ -4,14 +4,15 @@
              xsi:schemaLocation="
         http://java.sun.com/xml/ns/persistence
         http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-    <persistence-unit name="multiple-ds-user-storage-jpa">
-        <jta-data-source>java:jboss/datasources/KeycloakDS</jta-data-source>
-
+    <persistence-unit name="user-store" transaction-type="JTA">
         <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
-
         <properties>
-            <property name="hibernate.hbm2ddl.auto" value="none" />
-            <property name="hibernate.show_sql" value="false" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+            <!-- Sets the name of the datasource to be the same as the datasource name in quarkus.properties-->
+            <property name="hibernate.connection.datasource" value="user-store"/>
+            <property name="javax.persistence.transactionType" value="JTA"/>
+            <property name="hibernate.hbm2ddl.auto" value="none"/>
+            <property name="hibernate.show_sql" value="false"/>
         </properties>
     </persistence-unit>
 </persistence>
