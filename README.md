@@ -16,21 +16,50 @@ As an example:
 ### System Requirements
 ![CI](https://github.com/nicolabeghin/keycloak-multiple-ds-user-storage/actions/workflows/maven.yml/badge.svg)
 
-* tested on Keycloak 12.0.2 and later 
+* tested on Keycloak 18.0.2 and later 
 * Java SDK 11.0 or later 
 * * Maven 3.3.3 or later
 
 ### Pre-requisite - create the WildFly datasources
 
-You must first create the WildFly datasource that will be used. You can do this from WildFly admin interface (http://localhost:9990/console) 
-or programmatically like below. Remember to replace required variables (in uppercase, like `DATASOURCENAME`)
+You must first create the Quarkus datasource that will be used. You can add them in `<keycloak>/conf/quarkus.properties`:
 
-    /subsystem=datasources/data-source=DATASOURCENAME: add(jndi-name=java:jboss/datasources/DATASOURCENAME,enabled=true,jta=false,use-java-context=true,use-ccm=true, connection-url=jdbc:mysql://${env.DB_ADDR:mysql}:${env.DB_PORT:3306}/DATASOURCEDB${env.JDBC_PARAMS:}, driver-name=mysql)
-    /subsystem=datasources/data-source=DATASOURCENAME: write-attribute(name=user-name, value=${env.DB_USER:keycloak})
-    /subsystem=datasources/data-source=DATASOURCENAME: write-attribute(name=password, value=${env.DB_PASSWORD:password})
-    /subsystem=datasources/data-source=DATASOURCENAME: write-attribute(name=check-valid-connection-sql, value="SELECT 1")
-    /subsystem=datasources/data-source=DATASOURCENAME: write-attribute(name=background-validation-millis, value=60000)
-    /subsystem=datasources/data-source=DATASOURCENAME: write-attribute(name=flush-strategy, value=IdleConnections)
+    quarkus.datasource.user-store.db-kind=h2
+    quarkus.datasource.user-store.username=sa
+    quarkus.datasource.user-store.jdbc.url=jdbc:h2:mem:user-store;DB_CLOSE_DELAY=-1`
+
+    quarkus.datasource.user-store2.db-kind=h2
+    quarkus.datasource.user-store2.username=sa
+    quarkus.datasource.user-store2.jdbc.url=jdbc:h2:mem:user-store;DB_CLOSE_DELAY=-1`
+
+**Please note: `quarkus.properties` is not the one in the extension, but in the Keycloak server `conf` folder**
+
+Differently from the previously JBoss-based Keycloak, in Quarkus 
+you also need to explicitly maintain datasources in [`src/main/resources/META-INF/persistence.xml`](https://github.com/nicolabeghin/keycloak-multiple-ds-user-storage/blob/master/src/main/resources/META-INF/persistence.xml) 
+by adding a corresponding  `<persistence-unit>` for each datasource.
+
+    <persistence-unit name="user-store" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+            <!-- Sets the name of the datasource to be the same as the datasource name in quarkus.properties-->
+            <property name="hibernate.connection.datasource" value="user-store"/>
+            <property name="javax.persistence.transactionType" value="JTA"/>
+            <property name="hibernate.hbm2ddl.auto" value="none"/>
+            <property name="hibernate.show_sql" value="false"/>
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="user-store2" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+            <!-- Sets the name of the datasource to be the same as the datasource name in quarkus.properties-->
+            <property name="hibernate.connection.datasource" value="user-store2"/>
+            <property name="javax.persistence.transactionType" value="JTA"/>
+            <property name="hibernate.hbm2ddl.auto" value="none"/>
+            <property name="hibernate.show_sql" value="false"/>
+        </properties>
+    </persistence-unit>
 
 ### Build and Deploy
 
