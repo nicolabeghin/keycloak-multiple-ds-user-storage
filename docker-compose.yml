@@ -1,0 +1,5 @@
+version: '3'
+services:
+  maven:
+    image: nicolabeghin/keycloak-multiple-ds-user-storage:latest
+    build: .
