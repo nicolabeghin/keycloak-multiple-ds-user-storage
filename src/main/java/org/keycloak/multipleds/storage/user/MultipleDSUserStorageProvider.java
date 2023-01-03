@@ -17,6 +17,7 @@ import org.keycloak.storage.UserStorageProvider;
 import org.keycloak.storage.user.ImportedUserValidation;
 import org.keycloak.storage.user.UserLookupProvider;
 import org.keycloak.storage.user.UserQueryProvider;
+import org.keycloak.storage.UserStoragePrivateUtil;
 
 import javax.ejb.Local;
 import java.util.*;
@@ -66,12 +67,13 @@ public class MultipleDSUserStorageProvider implements UserStorageProvider,
         return new MultipleDSUserModelDelegate(local);
     }
 
+    // https://www.keycloak.org/docs/latest/upgrading/#changes-in-code-keycloaksession-code
     private UserModel createAdapter(RealmModel realm, UserEntity userEntity) {
         if (userEntity == null) return null;
-        UserModel local = session.userLocalStorage().getUserByUsername(userEntity.getUsername(), realm);
+        UserModel local = UserStoragePrivateUtil.userLocalStorage(session).getUserByUsername(userEntity.getUsername(), realm);
         if (local == null) {
             logger.info("Creating local user " + userEntity.getUsername());
-            local = session.userLocalStorage().addUser(realm, userEntity.getUsername());
+            local = UserStoragePrivateUtil.userLocalStorage(session).addUser(realm, userEntity.getUsername());
             local.setFirstName(userEntity.getFirstName());
             local.setLastName(userEntity.getLastName());
             if (userEntity.getEmail() != null && !ObjectUtil.isBlank(userEntity.getEmail())) {
