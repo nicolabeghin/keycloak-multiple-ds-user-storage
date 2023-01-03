@@ -1,0 +1,11 @@
+version: '3'
+services:
+  maven:
+    image: maven:3.8.7-amazoncorretto-11
+    restart: "no"
+    working_dir: /app
+    volumes:
+      - ./pom.xml:/app/pom.xml
+      - ./pom_parent.xml:/app/pom_parent.xml
+      - ./src:/app/src
+      - ./conf:/app/conf
