@@ -114,7 +114,7 @@ public class MultipleDSUserStorageProvider implements UserStorageProvider,
     @Override
     public boolean isValid(RealmModel realm, UserModel user, CredentialInput input) {
         if (!supportsCredentialType(input.getType()) || !(input instanceof UserCredentialModel)) return false;
-        if (session.userCredentialManager().isConfiguredLocally(realm, user, CredentialModel.PASSWORD)) {
+        if (user != null && user.credentialManager().isConfiguredLocally(CredentialModel.PASSWORD)) {
             return false;
         }
         UserCredentialModel cred = (UserCredentialModel) input;
