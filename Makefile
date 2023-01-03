@@ -19,3 +19,6 @@ package: build
 	docker cp ${DOCKER_CONTAINER}:/app/target/multiple-ds-user-storage.jar target/
 	docker rm ${DOCKER_CONTAINER}
 	docker image rm nicolabeghin/keycloak-multiple-ds-user-storage:latest
+
+start:
+	docker-compose -f docker-compose.local.yml run --rm --service-ports ${SERVICE_TARGET} bash
