@@ -15,6 +15,7 @@ build:
 
 package: build
 	$(eval DOCKER_CONTAINER := $(shell docker create nicolabeghin/keycloak-multiple-ds-user-storage:latest))
-	docker cp ${DOCKER_CONTAINER}:/app/target/multiple-ds-user-storage.jar .
+	mkdir -p target &> /dev/null
+	docker cp ${DOCKER_CONTAINER}:/app/target/multiple-ds-user-storage.jar target/
 	docker rm ${DOCKER_CONTAINER}
 	docker image rm nicolabeghin/keycloak-multiple-ds-user-storage:latest

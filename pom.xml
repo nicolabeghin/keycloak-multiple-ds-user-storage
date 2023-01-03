@@ -23,7 +23,7 @@
         <version>19.0.3</version>
         <relativePath>pom_parent.xml</relativePath>
     </parent>
-    <modelVersion>5.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
     <artifactId>multiple-ds-user-storage</artifactId>
     <packaging>jar</packaging>
     <name>Keycloak multiple datasource user storage</name>
