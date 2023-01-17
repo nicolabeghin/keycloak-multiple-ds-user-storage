@@ -1,8 +1,7 @@
-SERVICE_TARGET := maven
-HYBRIS_FOLDER := /opt/jboss/keycloak
+SERVICE_TARGET := maven:3.8.7-amazoncorretto-11
 
 # all our targets are phony (no files to check).
-.PHONY: help build package
+.PHONY: help package
 
 # suppress makes own output
 #.SILENT:
@@ -10,15 +9,7 @@ HYBRIS_FOLDER := /opt/jboss/keycloak
 help:
 	@echo 'Usage: make [TARGET]                                             '
 
-build:
-	docker-compose build --pull
+build: package
 
-package: build
-	$(eval DOCKER_CONTAINER := $(shell docker create nicolabeghin/keycloak-multiple-ds-user-storage:latest))
-	mkdir -p target &> /dev/null
-	docker cp ${DOCKER_CONTAINER}:/app/target/multiple-ds-user-storage.jar target/
-	docker rm ${DOCKER_CONTAINER}
-	docker image rm nicolabeghin/keycloak-multiple-ds-user-storage:latest
-
-start:
-	docker-compose -f docker-compose.local.yml run --rm --service-ports ${SERVICE_TARGET} bash
+package:
+	docker run --rm -v ${shell pwd}:/opt/app -w /opt/app ${SERVICE_TARGET} bash -c "mvn clean package"
