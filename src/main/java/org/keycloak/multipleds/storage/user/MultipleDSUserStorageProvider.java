@@ -76,15 +76,23 @@ public class MultipleDSUserStorageProvider implements UserStorageProvider,
             local = UserStoragePrivateUtil.userLocalStorage(session).addUser(realm, userEntity.getUsername());
             local.setFirstName(userEntity.getFirstName());
             local.setLastName(userEntity.getLastName());
-            if (userEntity.getEmail() != null && !ObjectUtil.isBlank(userEntity.getEmail())) {
-                local.setEmail(userEntity.getEmail().trim());
-            }
             local.setEnabled(userEntity.isEnabled());
             local.setFederationLink(model.getId());
-            return new MultipleDSUserModelDelegate(local, userEntity);
         } else {
             logger.info("Reusing local user " + local.getUsername());
         }
+        
+        // update local email from remote one
+        if (userEntity.getEmail() != null && !ObjectUtil.isBlank(userEntity.getEmail())) { // email available from remote
+            if (local.getEmail() == null || ObjectUtil.isBlank(local.getEmail())) { // local email not available
+                logger.info("Setting up local user " + local.getUsername() + " with email " + userEntity.getEmail());
+                local.setEmail(userEntity.getEmail().trim());
+            } else if (false == userEntity.getEmail().equalsIgnoreCase(local.getEmail())) { // local email different from remote
+                logger.info("Updating local user " + local.getUsername() + " with email " + userEntity.getEmail() + " (previously " + local.getEmail() + ")");
+                local.setEmail(userEntity.getEmail().trim());
+            }
+        }
+        
         return new MultipleDSUserModelDelegate(local, userEntity);
     }
 
