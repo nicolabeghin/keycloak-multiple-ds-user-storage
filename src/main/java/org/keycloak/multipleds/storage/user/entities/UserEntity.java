@@ -1,15 +1,16 @@
 package org.keycloak.multipleds.storage.user.entities;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @NamedQueries({
-        @NamedQuery(name = "getUserByUsername", query = "select u from UserEntity u where u.username = :username AND attivo=1"),
-        @NamedQuery(name = "getUserById", query = "select u from UserEntity u where u.id = :id AND attivo=1"),
-        @NamedQuery(name = "getUserByEmail", query = "select u from UserEntity u where u.email = :email AND attivo=1"),
-        @NamedQuery(name = "getUserCount", query = "select count(u) from UserEntity u WHERE attivo=1"),
-        @NamedQuery(name = "getAllUsers", query = "select u from UserEntity u WHERE attivo=1"),
+        @NamedQuery(name = "getUserByUsername", query = "select u from UserEntity u where u.username = :username AND enabled=true"),
+        @NamedQuery(name = "getUserById", query = "select u from UserEntity u where u.id = :id AND enabled=true"),
+        @NamedQuery(name = "getUserByEmail", query = "select u from UserEntity u where u.email = :email AND enabled=true"),
+        @NamedQuery(name = "getUserByPattern", query = "select u from UserEntity u where (u.email = :pattern OR u.username = :pattern) AND enabled=true"),
+        @NamedQuery(name = "getUserCount", query = "select count(u) from UserEntity u WHERE enabled=true"),
+        @NamedQuery(name = "getAllUsers", query = "select u from UserEntity u WHERE enabled=true"),
         @NamedQuery(name = "searchForUser", query = "select u from UserEntity u where " +
-                "( lower(u.username) like :search or u.email like :search ) AND attivo=1 order by u.username"),
+                "( lower(u.username) like :search or u.email like :search ) AND enabled=true order by u.username"),
 })
 @Entity
 @Table(name = "users")
