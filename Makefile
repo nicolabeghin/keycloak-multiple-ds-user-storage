@@ -1,4 +1,4 @@
-SERVICE_TARGET := maven:3.8.7-amazoncorretto-11
+SERVICE_TARGET := keycloak-multiple-ds-user-storage
 
 # all our targets are phony (no files to check).
 .PHONY: help package
@@ -11,5 +11,14 @@ help:
 
 build: package
 
+extract:
+	$(eval DOCKER_CONTAINER := $(shell docker create --name tc ${SERVICE_TARGET}:latest))
+	mkdir -p target
+	docker cp ${DOCKER_CONTAINER}:/opt/app/target/multiple-ds-user-storage.jar target/
+	docker rm tc
+
 package:
-	docker run --rm -v ${shell pwd}:/opt/app -w /opt/app ${SERVICE_TARGET} bash -c "mvn clean package"
+	rm -fr target || true
+	-docker rm tc
+	docker build -t ${SERVICE_TARGET} .
+	$(MAKE) extract

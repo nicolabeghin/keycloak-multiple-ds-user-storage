@@ -21,7 +21,7 @@
 
     <groupId>org.keycloak.quickstarts</groupId>
     <artifactId>keycloak-quickstart-parent</artifactId>
-    <version>19.0.3</version>
+    <version>23.0.0</version>
     <packaging>pom</packaging>
     <name>Keycloak Quickstart: parent</name>
     <description>Parent</description>
@@ -35,43 +35,43 @@
     </licenses>
 
     <properties>
-        <version.wildfly>14.0.1.Final</version.wildfly>
         <version.keycloak>${project.version}</version.keycloak>
-
-        <version.wildfly.maven.plugin>1.2.2.Final</version.wildfly.maven.plugin>
         <servlet.api.30.version>1.0.2.Final</servlet.api.30.version>
         <jboss-jaxrs-api_2.1_spec>1.0.1.Final</jboss-jaxrs-api_2.1_spec>
         <version.jboss.maven.plugin>7.4.Final</version.jboss.maven.plugin>
-        <version.war.maven.plugin>2.6</version.war.maven.plugin>
-        <version.enforcer.maven.plugin>1.4.1</version.enforcer.maven.plugin>
-        <version.surefire.plugin>2.19.1</version.surefire.plugin>
+        <version.war.maven.plugin>3.3.2</version.war.maven.plugin>
+        <version.surefire.plugin>3.0.0-M7</version.surefire.plugin>
+        <version.failsafe.plugin>3.0.0-M7</version.failsafe.plugin>
         <version.exec.maven.plugin>1.6.0</version.exec.maven.plugin>
         <version.antrun.maven.plugin>1.8</version.antrun.maven.plugin>
         <version.frontend.maven.plugin>1.4</version.frontend.maven.plugin>
         <version.resources.maven.plugin>3.0.2</version.resources.maven.plugin>
         <version.compiler.maven.plugin>3.1</version.compiler.maven.plugin>
 
-        <arquillian-graphene.version>2.3.2</arquillian-graphene.version>
         <arquillian-phantom.version>1.2.1.Final</arquillian-phantom.version>
         <arquillian-screenshooter.version>2.3.2</arquillian-screenshooter.version>
-        <version.wildfly.arquillian.container>2.1.1.Final</version.wildfly.arquillian.container>
         <version.junit>4.12</version.junit>
         <version.hamcrest>1.3</version.hamcrest>
         <version.creaper>1.6.1</version.creaper>
-        <version.jackson>2.9.5</version.jackson>
         <version.shrinkwrap.resolvers>3.1.4</version.shrinkwrap.resolvers>
+        <version.jee.jaxb.api>2.3.1</version.jee.jaxb.api>
 
         <arquillian-managed>true</arquillian-managed>
+        <version.wildfly.maven.plugin>4.1.1.Final</version.wildfly.maven.plugin>
         <jboss-cli.executable>./jboss-cli.sh</jboss-cli.executable>
         <keycloak.management.port>10090</keycloak.management.port>
         <selenium-bom.version>3.11.0</selenium-bom.version>
-        <arquillian-bom.version>1.4.0.Final</arquillian-bom.version>
+        <arquillian-bom.version>1.7.1.Final</arquillian-bom.version>
         <arquillian-drone-bom.version>2.5.1</arquillian-drone-bom.version>
         <version.json.javax>1.1.2</version.json.javax>
         <version.yasson>1.0.8</version.yasson>
+        <version.jackson>2.14.2</version.jackson>
+        <org.jboss.galleon.version>5.2.2.Final</org.jboss.galleon.version>
 
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <version.wildfly>30.0.0.Final</version.wildfly>
+        
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
     <dependencyManagement>
@@ -152,7 +152,7 @@
             </dependency>
             <dependency>
                 <groupId>org.wildfly.bom</groupId>
-                <artifactId>wildfly-javaee8</artifactId>
+                <artifactId>wildfly-ee-with-tools</artifactId>
                 <version>${version.wildfly}</version>
                 <type>pom</type>
                 <scope>import</scope>

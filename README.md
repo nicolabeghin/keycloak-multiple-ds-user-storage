@@ -16,9 +16,9 @@ As an example:
 ### System Requirements
 ![CI](https://github.com/nicolabeghin/keycloak-multiple-ds-user-storage/actions/workflows/maven.yml/badge.svg)
 
-* tested on Keycloak 19.0.3 and later 
-* Java SDK 11.0 or later 
-* * Maven 3.3.3 or later
+
+* tested on Keycloak 23.0.0
+* Java SDK 17.0 or later (Maven 3)
 
 ### Pre-requisite - create the WildFly datasources
 

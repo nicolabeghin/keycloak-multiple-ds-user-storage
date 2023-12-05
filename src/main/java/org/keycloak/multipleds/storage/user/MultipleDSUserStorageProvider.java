@@ -19,11 +19,10 @@ import org.keycloak.storage.user.UserLookupProvider;
 import org.keycloak.storage.user.UserQueryProvider;
 import org.keycloak.storage.UserStoragePrivateUtil;
 
-import javax.ejb.Local;
 import java.util.*;
+import java.util.stream.Stream;
 
 //@Stateful
-@Local(MultipleDSUserStorageProvider.class)
 public class MultipleDSUserStorageProvider implements UserStorageProvider,
         UserLookupProvider,
         UserQueryProvider,
@@ -45,7 +44,7 @@ public class MultipleDSUserStorageProvider implements UserStorageProvider,
     }
 
     @Override
-    public UserModel getUserById(String id, RealmModel realm) {
+    public UserModel getUserById(RealmModel realm, String id) {
         UserEntity entity = userDAO.findById(id);
         if (entity == null) {
             logger.info("could not find user by id: " + id);
@@ -55,7 +54,7 @@ public class MultipleDSUserStorageProvider implements UserStorageProvider,
     }
 
     @Override
-    public UserModel getUserByUsername(String username, RealmModel realm) {
+    public UserModel getUserByUsername(RealmModel realm, String username) {
         return createAdapter(realm, getUserEntityByUsername(username));
     }
 
@@ -70,7 +69,7 @@ public class MultipleDSUserStorageProvider implements UserStorageProvider,
     // https://www.keycloak.org/docs/latest/upgrading/#changes-in-code-keycloaksession-code
     private UserModel createAdapter(RealmModel realm, UserEntity userEntity) {
         if (userEntity == null) return null;
-        UserModel local = UserStoragePrivateUtil.userLocalStorage(session).getUserByUsername(userEntity.getUsername(), realm);
+        UserModel local = UserStoragePrivateUtil.userLocalStorage(session).getUserByUsername(realm, userEntity.getUsername());
         if (local == null) {
             logger.info("Creating local user " + userEntity.getUsername());
             local = UserStoragePrivateUtil.userLocalStorage(session).addUser(realm, userEntity.getUsername());
@@ -97,7 +96,7 @@ public class MultipleDSUserStorageProvider implements UserStorageProvider,
     }
 
     @Override
-    public UserModel getUserByEmail(String email, RealmModel realm) {
+    public UserModel getUserByEmail(RealmModel realm, String email) {
         UserEntity userEntity = userDAO.findByEmail(email);
         if (userEntity != null) createAdapter(realm, userEntity);
         return null;
@@ -168,13 +167,6 @@ public class MultipleDSUserStorageProvider implements UserStorageProvider,
     }
 
     @Override
-    public Set<String> getDisableableCredentialTypes(RealmModel realm, UserModel user) {
-        Set<String> set = new HashSet<>();
-        set.add(CredentialModel.PASSWORD);
-        return set;
-    }
-
-    @Override
     public boolean isConfiguredFor(RealmModel realm, UserModel user, String credentialType) {
         return supportsCredentialType(credentialType) && getPassword(user) != null;
     }
@@ -182,57 +174,6 @@ public class MultipleDSUserStorageProvider implements UserStorageProvider,
     @Override
     public int getUsersCount(RealmModel realm) {
         return userDAO.getCount();
-    }
-
-    @Override
-    public List<UserModel> getUsers(RealmModel realm) {
-        return getUsers(realm, -1, -1);
-    }
-
-    @Override
-    public List<UserModel> getUsers(RealmModel realm, int firstResult, int maxResults) {
-        List<UserEntity> results = userDAO.findAll(firstResult, maxResults);
-        List<UserModel> users = new LinkedList<>();
-        for (UserEntity entity : results) users.add(createAdapter(realm, entity));
-        return users;
-    }
-
-    @Override
-    public List<UserModel> searchForUser(String search, RealmModel realm) {
-        return searchForUser(search, realm, -1, -1);
-    }
-
-    @Override
-    public List<UserModel> searchForUser(String search, RealmModel realm, int firstResult, int maxResults) {
-        List<UserEntity> results = userDAO.search(search, firstResult, maxResults);
-        List<UserModel> users = new LinkedList<>();
-        for (UserEntity entity : results) users.add(createAdapter(realm, entity));
-        return users;
-    }
-
-    @Override
-    public List<UserModel> searchForUser(Map<String, String> params, RealmModel realm) {
-        return Collections.EMPTY_LIST;
-    }
-
-    @Override
-    public List<UserModel> searchForUser(Map<String, String> params, RealmModel realm, int firstResult, int maxResults) {
-        return Collections.EMPTY_LIST;
-    }
-
-    @Override
-    public List<UserModel> getGroupMembers(RealmModel realm, GroupModel group, int firstResult, int maxResults) {
-        return Collections.EMPTY_LIST;
-    }
-
-    @Override
-    public List<UserModel> getGroupMembers(RealmModel realm, GroupModel group) {
-        return Collections.EMPTY_LIST;
-    }
-
-    @Override
-    public List<UserModel> searchForUserByUserAttribute(String attrName, String attrValue, RealmModel realm) {
-        return Collections.EMPTY_LIST;
     }
 
     @Override
@@ -253,6 +194,28 @@ public class MultipleDSUserStorageProvider implements UserStorageProvider,
     @Override
     public void close() {
         userDAO.close();
+    }
+
+    @Override
+    public Stream<UserModel> getGroupMembersStream(RealmModel realm, GroupModel arg1, Integer arg2, Integer arg3) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getGroupMembersStream'");
+    }
+
+    @Override
+    public Stream<UserModel> searchForUserByUserAttributeStream(RealmModel realm, String arg1, String arg2) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'searchForUserByUserAttributeStream'");
+    }
+
+    @Override
+    public Stream<UserModel> searchForUserStream(RealmModel realm, Map<String, String> filters, Integer firstResult, Integer maxResults) {
+        return userDAO.findStreamAll(filters, firstResult, maxResults).map(entity -> createAdapter(realm, entity));
+    }
+
+    @Override
+    public Stream<String> getDisableableCredentialTypesStream(RealmModel arg0, UserModel arg1) {
+        return Stream.of(CredentialModel.PASSWORD);
     }
 
 }
