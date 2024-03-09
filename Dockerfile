@@ -1,4 +1,4 @@
-FROM maven:3-eclipse-temurin-21-alpine
+FROM maven:3.8.6-openjdk-18-slim
 WORKDIR /opt/app
 
 # to cache dependencies
