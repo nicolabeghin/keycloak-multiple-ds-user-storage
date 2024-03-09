@@ -4,15 +4,227 @@
              xsi:schemaLocation="
         http://java.sun.com/xml/ns/persistence
         http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-    <persistence-unit name="user-store" transaction-type="JTA">
+    <persistence-unit name="SIADS" transaction-type="JTA">
         <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
         <properties>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
             <!-- Sets the name of the datasource to be the same as the datasource name in quarkus.properties-->
-            <property name="hibernate.connection.datasource" value="user-store"/>
-            <property name="javax.persistence.transactionType" value="JTA"/>
-            <property name="hibernate.hbm2ddl.auto" value="none"/>
-            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.connection.datasource" value="SIADS" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
         </properties>
     </persistence-unit>
+
+    <persistence-unit name="SIPPD" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIPPD" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="SIPAO" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIPAO" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="SIPBG" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIPBG" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="SIAMI" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIAMI" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="SIPLI" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIPLI" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="SIAPD" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIAPD" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="SIALI" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIALI" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="SIABG" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIABG" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="SIPFG" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIPFG" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="SIAFI" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIAFI" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="SIAFG" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIAFG" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="SIPFI" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIPFI" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="SIPMI" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIPMI" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="SIPDS" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIPDS" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="SIATV" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIATV" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="SIPTV" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIPTV" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="SIAVI" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIAVI" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="SIPVE" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIPVE" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="SIAAO" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIAAO" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="SIAVE" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIAVE" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="SIPVI" transaction-type="JTA">
+        <class>org.keycloak.multipleds.storage.user.entities.UserEntity</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.datasource" value="SIPVI" />
+            <property name="javax.persistence.transactionType" value="JTA" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+
 </persistence>
