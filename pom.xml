@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.keycloak.quickstarts</groupId>
         <artifactId>keycloak-quickstart-parent</artifactId>
-        <version>23.0.0</version>
+        <version>24.0.1</version>
         <relativePath>pom_parent.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -72,11 +72,13 @@
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-model-legacy</artifactId>
+            <version>${version.keycloak}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-model-legacy-private</artifactId>
+            <artifactId>keycloak-model-storage-private</artifactId>
+            <version>${version.keycloak}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
