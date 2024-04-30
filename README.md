@@ -17,20 +17,22 @@ As an example:
 ![CI](https://github.com/nicolabeghin/keycloak-multiple-ds-user-storage/actions/workflows/maven.yml/badge.svg)
 
 
-* tested on Keycloak 24.0.1
+* tested on Keycloak 24.0.3
 * Java SDK 17.0 or later (Maven 3)
 
-### Pre-requisite - create the WildFly datasources
+### Pre-requisite - create the Quarkus datasources
 
 You must first create the Quarkus datasource that will be used. You can add them in `<keycloak>/conf/quarkus.properties`:
 
     quarkus.datasource.user-store.db-kind=h2
     quarkus.datasource.user-store.username=sa
     quarkus.datasource.user-store.jdbc.url=jdbc:h2:mem:user-store;DB_CLOSE_DELAY=-1`
+    quarkus.datasource.user-store.jdbc.transactions=xa
 
     quarkus.datasource.user-store2.db-kind=h2
     quarkus.datasource.user-store2.username=sa
     quarkus.datasource.user-store2.jdbc.url=jdbc:h2:mem:user-store;DB_CLOSE_DELAY=-1`
+    quarkus.datasource.user-store2.jdbc.transactions=xa
 
 **Please note: `quarkus.properties` is not the one in the extension, but in the Keycloak server `conf` folder**
 
