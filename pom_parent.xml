@@ -21,7 +21,7 @@
 
     <groupId>org.keycloak.quickstarts</groupId>
     <artifactId>keycloak-quickstart-parent</artifactId>
-    <version>24.0.3</version>
+    <version>26.0.5</version>
     <packaging>pom</packaging>
     <name>Keycloak Quickstart: parent</name>
     <description>Parent</description>
@@ -131,20 +131,6 @@
             </dependency>
             <dependency>
                 <groupId>org.keycloak.bom</groupId>
-                <artifactId>keycloak-adapter-bom</artifactId>
-                <version>${version.keycloak}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.keycloak.bom</groupId>
-                <artifactId>keycloak-misc-bom</artifactId>
-                <version>${version.keycloak}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.keycloak.bom</groupId>
                 <artifactId>keycloak-spi-bom</artifactId>
                 <version>${version.keycloak}</version>
                 <type>pom</type>
@@ -190,29 +176,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-container</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${version.junit}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-test-helper</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-    </dependencies>
 
     <modules>
         <module>service-jee-jaxrs</module>

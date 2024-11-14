@@ -17,7 +17,7 @@ As an example:
 ![CI](https://github.com/nicolabeghin/keycloak-multiple-ds-user-storage/actions/workflows/maven.yml/badge.svg)
 
 
-* tested on Keycloak 24.0.3
+* tested on Keycloak 26.0.5
 * Java SDK 17.0 or later (Maven 3)
 
 ### Pre-requisite - create the Quarkus datasources
